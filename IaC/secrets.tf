@@ -4,7 +4,7 @@ resource "kubernetes_secret" "my-secret" {
     name = "my-secret"
     }
   data = {
-    ROOT_PASSWORD = "Senha123"
-    MYSQL_DATABASE = "meubanco"
+    ROOT_PASSWORD = var.bd_senha
+    MYSQL_DATABASE = var.bd_nome
     }
   }
