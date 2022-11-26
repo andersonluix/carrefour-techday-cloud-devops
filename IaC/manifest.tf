@@ -15,7 +15,7 @@ spec:
 
 YAML
  depends_on = [
-    google_container_node_pool.pool
+    kubectl_manifest.deployment_app
  ]
 }
 
@@ -36,7 +36,7 @@ spec:
 YAML
 
 depends_on = [
-    kubectl_manifest.loadbalance
+    kubectl_manifest.deployment_mysql
  ]
 
 }
@@ -60,7 +60,8 @@ spec:
 YAML
 
 depends_on = [
-    kubectl_manifest.mysql-connection
+    #kubectl_manifest.mysql-connection
+    google_container_node_pool.pool
  ]
 
 }
@@ -198,7 +199,8 @@ spec:
 YAML
 
  depends_on = [
-    kubectl_manifest.deployment_mysql
+    kubectl_manifest.deployment_mysql,
+    kubectl_manifest.mysql-connection
  ]
 
 }
