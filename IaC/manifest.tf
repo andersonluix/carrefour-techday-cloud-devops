@@ -164,7 +164,7 @@ data:
 
 YAML
  depends_on = [
-    kubectl_manifest.loadbalance
+    google_container_node_pool.pool
  ]
 }
 
