@@ -8,6 +8,7 @@ provider "kubectl" {
   host                   = "https://${google_container_cluster.cluster.endpoint}"
   token                  = data.google_client_config.default.access_token
   cluster_ca_certificate = base64decode(google_container_cluster.cluster.master_auth[0].cluster_ca_certificate)
+  load_config_file       = false
 }
 
 #Conf K8's OAuth2 access token
