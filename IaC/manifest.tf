@@ -188,8 +188,16 @@ spec:
         app: app-backend
     spec:
       containers:
-      - image: andersonlbsilva/app-bc-carrefour-dio:1.0
-        name: app-backend
+      - image: andersonlbsilva/app-bc-carrefour-dio:1.2
+        name: app-backend        
+        livenessProbe:
+          httpGet:
+            path: /healthy.html
+            port: 80
+          initialDelaySeconds: 5
+          timeoutSeconds: 1
+          periodSeconds: 10
+          failureThreshold: 3
         #sempre baixa a imagem a cada execucao
         imagePullPolicy: Always
         ports:

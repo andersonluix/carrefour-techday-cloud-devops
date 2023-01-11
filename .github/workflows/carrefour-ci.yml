@@ -24,7 +24,7 @@ jobs:
         with:
           context: backend/
           push: true
-          tags: ${{ secrets.USER }}/app-bc-carrefour-dio:1.0
+          tags: ${{ secrets.USER }}/app-bc-carrefour-dio:1.2
 
   terraform:
     name: 'Terraform'
