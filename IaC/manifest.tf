@@ -108,6 +108,18 @@ spec:
       containers:
       - image: mysql:5.6
         name: mysql
+        livenessProbe:
+          tcpSocket:
+            port: 3306
+          initialDelaySeconds: 5
+          periodSeconds: 10
+          failureThreshold: 3
+        readinessProbe:
+          tcpSocket:
+            port: 3306
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          failureThreshold: 3
         args:
           - "--ignore-db-dir=lost+found"
         env:
@@ -195,6 +207,14 @@ spec:
             path: /healthy.html
             port: 80
           initialDelaySeconds: 5
+          timeoutSeconds: 1
+          periodSeconds: 10
+          failureThreshold: 3
+        readinessProbe:
+          httpGet:
+            path: /healthy.html
+            port: 80
+          initialDelaySeconds: 30
           timeoutSeconds: 1
           periodSeconds: 10
           failureThreshold: 3
