@@ -1,0 +1,61 @@
+name: CI terraform
+
+on:
+  push:
+    branches:
+      - 'main'
+    path: 
+      - 'IaC/**.tf'
+  workflow_dispatch:
+    inputs:
+      action:
+        description: 'Terraform Action to Perform'
+        type: choice
+        options:
+        - Terraform_destroy
+
+jobs:
+  terraform:
+    name: 'Terraform'
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: IaC
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v1
+
+    - name: Terraform Init
+      run: terraform init
+      env:
+        GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }}
+
+    #- name: Terraform Format
+    #  run: terraform fmt -check
+
+    - name: Terraform Plan
+      if: ${{ github.event.inputs.action != 'Terraform_destroy' }}
+      run: terraform plan -var="bd_senha=$bd_senha" -var="bd_nome=$bd_nome"
+      env:
+        GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }}
+        bd_nome: ${{ secrets.SECRET_DATABASE }}
+        bd_senha: ${{ secrets.SECRET_SENHA }}
+
+    - name: Terraform Apply
+      if: ${{ github.event.inputs.action != 'Terraform_destroy' }}
+      run: terraform apply -auto-approve -var="bd_senha=$bd_senha" -var="bd_nome=$bd_nome"
+      env:
+        GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }}
+        bd_nome: ${{ secrets.SECRET_DATABASE }}
+        bd_senha: ${{ secrets.SECRET_SENHA }}
+
+    - name: Terraform Destroy
+      if: ${{ github.event.inputs.action == 'Terraform_destroy' }}
+      run: terraform destroy -auto-approve
+      env:
+        GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }}
