@@ -120,6 +120,13 @@ spec:
           initialDelaySeconds: 30
           periodSeconds: 10
           failureThreshold: 3
+        resources:
+          requests:
+            cpu: "1m"
+            memory: "500Mi"
+          limits:
+            cpu: "200m"
+            memory: "1256Mi"
         args:
           - "--ignore-db-dir=lost+found"
         env:
@@ -190,7 +197,7 @@ metadata:
   labels:
     app: app-backend
 spec:
-  replicas: 6
+  replicas: 5
   selector:
     matchLabels:
       app: app-backend
@@ -218,6 +225,13 @@ spec:
           timeoutSeconds: 1
           periodSeconds: 10
           failureThreshold: 3
+        resources:
+          requests:
+            cpu: "1m"
+            memory: "20Mi"
+          limits:
+            cpu: "200m"
+            memory: "512Mi"
         #sempre baixa a imagem a cada execucao
         imagePullPolicy: Always
         ports:
