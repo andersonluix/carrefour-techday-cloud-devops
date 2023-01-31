@@ -56,6 +56,8 @@ jobs:
 
     - name: Terraform Destroy
       if: ${{ github.event.inputs.action == 'Terraform_destroy' }}
-      run: terraform destroy -auto-approve
+      run: terraform destroy -auto-approve -var="bd_senha=$bd_senha" -var="bd_nome=$bd_nome"
       env:
         GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }}
+        bd_nome: ${{ secrets.SECRET_DATABASE }}
+        bd_senha: ${{ secrets.SECRET_SENHA }}
