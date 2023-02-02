@@ -4,6 +4,7 @@ WORKDIR /var/www/html
 COPY index.php /var/www/html/
 COPY conexao.php /var/www/html/
 COPY healthy.html /var/www/html/
+COPY consulta.php /var/www/html/
 
 RUN apt-get update && apt-get install -y \
         libfreetype6-dev \
