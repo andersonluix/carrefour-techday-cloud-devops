@@ -29,6 +29,17 @@ terraform {
 # Flux
 provider "flux" {}
 
+
+
+# resource "flux_bootstrap_git" "this" {
+#   url  = 
+#   path = var.target_path
+#   ssh = {
+#     username    = var.github_owner
+#     private_key = var.github_token
+#   }
+# }
+
 data "flux_install" "main" {
   target_path = var.target_path
 }

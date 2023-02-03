@@ -30,7 +30,6 @@ variable "bd_nome" {
   type = string
 }
 
-
 variable "repository_name" {
   description = "repository name"
   type        = string

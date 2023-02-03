@@ -6,6 +6,7 @@ on:
       - 'main'
     paths: 
       - 'IaC/**.tf'
+      - 'Flux/**.tf'
   workflow_dispatch:
     inputs:
       action:
