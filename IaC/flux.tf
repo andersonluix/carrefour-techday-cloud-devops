@@ -28,10 +28,9 @@ resource "kubernetes_namespace" "flux_system" {
     on_failure = continue
   }
 
-  depends_on = [
-    #kubectl_manifest.mysql-connection
-    google_container_node_pool.pool
- ]
+#   depends_on = [
+#     google_container_node_pool.pool
+#  ]
 }
 
 data "kubectl_file_documents" "install" {
