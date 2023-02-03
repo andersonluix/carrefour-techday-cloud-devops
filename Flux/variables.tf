@@ -1,11 +1,7 @@
 variable "project_id" {
-  description = "id do projeto criado no gcp"
+  description = "project id"
+  type        = string
   default     = "pro-lattice-368817"
-}
-
-variable "region" {
-  description = "regiao do projeto"
-  default     = "us-west4"
 }
 
 variable "github_token" {
@@ -47,6 +43,13 @@ variable "cluster_name" {
   description = "cluster name"
   default     = "projeto-carrefour-gke"
 }
+
+variable "cluster_region" {
+  type        = string
+  description = "cluster region"
+  default     = "us-west4-a"
+}
+
 variable "use_private_endpoint" {
   type        = bool
   description = "Connect on the private GKE cluster endpoint"
@@ -56,5 +59,5 @@ variable "use_private_endpoint" {
 variable "github_deploy_key_title" {
   type        = string
   description = "Name of github deploy key"
-  default     = "key_flux"
+  default       = "key_flux"
 }
