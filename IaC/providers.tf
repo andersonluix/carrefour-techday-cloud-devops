@@ -24,3 +24,11 @@ provider "kubernetes" {
   token                  = data.google_client_config.default.access_token
   cluster_ca_certificate = base64decode(google_container_cluster.cluster.master_auth[0].cluster_ca_certificate)
 }
+
+provider "flux" {}
+
+# Github
+provider "github" {
+  token        = var.github_token
+  owner        = var.github_owner
+}
