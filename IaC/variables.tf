@@ -17,15 +17,6 @@ variable "zone" {
   default = "us-west4-a"
 }
 
-# variable "filestorename" {
-#   description = "nome do filestore"
-#   default = "dados"
-# }
-
-# variable "filestorecomp" {
-#   description = "nome do compartilhamento filestore"
-#   default = "database"
-# }
 
 variable "gke_num_nodes" {
   default     = 3

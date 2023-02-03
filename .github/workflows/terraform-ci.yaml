@@ -40,7 +40,7 @@ jobs:
 
     - name: Terraform Plan
       if: ${{ github.event.inputs.action != 'Terraform_destroy' }}
-      run: terraform plan -var="bd_senha=$bd_senha" -var="bd_nome=$bd_nome" -var="github_owner=$git_user" -var="github_token=$git_token"
+      run: terraform plan -var="bd_senha=$bd_senha" -var="bd_nome=$bd_nome"
       env:
         GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }}
         bd_nome: ${{ secrets.SECRET_DATABASE }}
@@ -50,7 +50,7 @@ jobs:
 
     - name: Terraform Apply
       if: ${{ github.event.inputs.action != 'Terraform_destroy' }}
-      run: terraform apply -auto-approve -var="bd_senha=$bd_senha" -var="bd_nome=$bd_nome" -var="github_owner=$git_user" -var="github_token=$git_token"
+      run: terraform apply -auto-approve -var="bd_senha=$bd_senha" -var="bd_nome=$bd_nome"
       env:
         GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }}
         bd_nome: ${{ secrets.SECRET_DATABASE }}
@@ -60,7 +60,7 @@ jobs:
 
     - name: Terraform Destroy
       if: ${{ github.event.inputs.action == 'Terraform_destroy' }}
-      run: terraform destroy -auto-approve -var="bd_senha=$bd_senha" -var="bd_nome=$bd_nome" -var="github_owner=$git_user" -var="github_token=$git_token"
+      run: terraform destroy -auto-approve -var="bd_senha=$bd_senha" -var="bd_nome=$bd_nome"
       env:
         GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }}
         bd_nome: ${{ secrets.SECRET_DATABASE }}
