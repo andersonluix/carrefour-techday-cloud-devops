@@ -1,3 +1,34 @@
+terraform {
+  required_version = ">= 0.13"
+
+  required_providers {
+    github = {
+      source  = "integrations/github"
+      version = ">= 4.5.2"
+    }
+    kubernetes = {
+      source  = "hashicorp/kubernetes"
+      version = ">= 2.0.2"
+    }
+    kubectl = {
+      source  = "gavinbunney/kubectl"
+      version = ">= 1.10.0"
+    }
+    flux = {
+      source  = "fluxcd/flux"
+      version = ">= 0.22.3"
+      #version = ">= 0.0.13"
+    }
+    tls = {
+      source  = "hashicorp/tls"
+      version = "3.1.0"
+    }
+  }
+}
+
+# Flux
+provider "flux" {}
+
 data "flux_install" "main" {
   target_path = var.target_path
 }
@@ -8,7 +39,27 @@ data "flux_sync" "main" {
   branch      = var.branch
 }
 
+# https://registry.terraform.io/modules/terraform-google-modules/kubernetes-engine/google/latest/submodules/auth
+module "gke_auth" {
+  source               = "terraform-google-modules/kubernetes-engine/google//modules/auth"
+  project_id           = var.project_id
+  cluster_name         = var.cluster_name
+  location             = var.cluster_region
+  use_private_endpoint = var.use_private_endpoint
+}
 
+provider "kubernetes" {
+  cluster_ca_certificate = module.gke_auth.cluster_ca_certificate
+  host                   = module.gke_auth.host
+  token                  = module.gke_auth.token
+}
+
+provider "kubectl" {
+  cluster_ca_certificate = module.gke_auth.cluster_ca_certificate
+  host                   = module.gke_auth.host
+  token                  = module.gke_auth.token
+  load_config_file       = false
+}
 
 # Kubernetes
 resource "kubernetes_namespace" "flux_system" {
@@ -22,15 +73,12 @@ resource "kubernetes_namespace" "flux_system" {
     ]
   }
 
+  
   provisioner "local-exec" {
     when       = destroy
     command    = "kubectl patch customresourcedefinition helmcharts.source.toolkit.fluxcd.io helmreleases.helm.toolkit.fluxcd.io helmrepositories.source.toolkit.fluxcd.io kustomizations.kustomize.toolkit.fluxcd.io gitrepositories.source.toolkit.fluxcd.io -p '{\"metadata\":{\"finalizers\":null}}'"
     on_failure = continue
   }
-
-#   depends_on = [
-#     google_container_node_pool.pool
-#  ]
 }
 
 data "kubectl_file_documents" "install" {
@@ -90,13 +138,19 @@ resource "kubernetes_secret" "main" {
   }
 }
 
+# Github
+provider "github" {
+  token        = var.github_token
+  owner        = var.github_owner
+}
+
 # To make sure the repository exists and the correct permissions are set.
 data "github_repository" "main" {
   full_name = "${var.github_owner}/${var.repository_name}.git"
 }
 
 resource "github_repository_file" "install" {
-  repository          = var.repository_name
+  repository          = "carrefour-techday-cloud-devops-flux"
   file                = data.flux_install.main.path
   content             = data.flux_install.main.content
   branch              = var.branch
@@ -122,7 +176,7 @@ resource "github_repository_file" "kustomize" {
 # For flux to fetch source
 resource "github_repository_deploy_key" "flux" {
   title      = var.github_deploy_key_title
-  repository = var.repository_name #data.github_repository.main.name
+  repository = "carrefour-techday-cloud-devops-flux" #data.github_repository.main.name
   key        = tls_private_key.github_deploy_key.public_key_openssh
   read_only  = true
 }

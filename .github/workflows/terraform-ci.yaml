@@ -67,3 +67,51 @@ jobs:
         bd_senha: ${{ secrets.SECRET_SENHA }}
         git_user: ${{ secrets.GITUSER }}
         git_token: ${{ secrets.GITTOKEN }}
+  
+  flux:
+    name: 'Terraform init Flux'
+    runs-on: ubuntu-latest
+    needs: terraform
+
+    defaults:
+      run:
+        working-directory: Flux
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v1
+
+    - name: Terraform Init
+      run: terraform init
+      env:
+        GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }}
+
+    #- name: Terraform Format
+    #  run: terraform fmt -check
+
+    - name: Terraform Plan Flux
+      if: ${{ github.event.inputs.action != 'Terraform_destroy' }}
+      run: terraform plan -var="github_owner=$git_user" -var="github_token=$git_token"
+      env:
+        GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }}
+        git_user: ${{ secrets.GITUSER }}
+        git_token: ${{ secrets.GITTOKEN }}
+
+    - name: Terraform Apply Flux
+      if: ${{ github.event.inputs.action != 'Terraform_destroy' }}
+      run: terraform apply -auto-approve -var="github_owner=$git_user" -var="github_token=$git_token"
+      env:
+        GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }}
+        git_user: ${{ secrets.GITUSER }}
+        git_token: ${{ secrets.GITTOKEN }}
+
+    - name: Terraform Destroy Flux
+      if: ${{ github.event.inputs.action == 'Terraform_destroy' }}
+      run: terraform destroy -auto-approve -var="github_owner=$git_user" -var="github_token=$git_token"
+      env:
+        GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }}
+        git_user: ${{ secrets.GITUSER }}
+        git_token: ${{ secrets.GITTOKEN }}
