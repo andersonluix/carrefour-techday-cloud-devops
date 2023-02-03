@@ -38,6 +38,7 @@ variable "bd_senha" {
 
 variable "bd_nome" {
   type = string
+}
 
 variable "github_token" {
   description = "token for github"
