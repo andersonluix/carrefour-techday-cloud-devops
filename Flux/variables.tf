@@ -3,6 +3,11 @@ variable "project_id" {
   default     = "pro-lattice-368817"
 }
 
+variable "region" {
+  description = "regiao do projeto"
+  default     = "us-west4"
+}
+
 variable "github_token" {
   description = "token for github"
   type        = string
